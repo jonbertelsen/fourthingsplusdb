@@ -6,6 +6,8 @@ import app.persistence.ConnectionPool;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinThymeleaf;
 
+import static io.javalin.apibuilder.ApiBuilder.crud;
+
 public class Main
 {
 
@@ -29,5 +31,7 @@ public class Main
 
         app.get("/", ctx ->  ctx.render("index.html"));
         app.post("/login", ctx -> UserController.login(ctx, connectionPool));
+
+
     }
 }
