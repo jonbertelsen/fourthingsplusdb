@@ -14,17 +14,19 @@
 
     <div id="page-content">
         <h1>Fourthingsplus</h1>
+        <p>Indtast venligst brugerinfo:</p>
         <div class="centered-form">
             <form method="post">
 
                 <input type="text" name="username" placeholder="username"/>
-                <input type="password" name="password" placeholder="password"/>
-                <button type="submit" formaction="/login">Log på</button>
+                <input type="password" name="password1" placeholder="password"/>
+                <input type="password" name="password2" placeholder="gentag password"/>
+                <button type="submit" formaction="/createuser">Opret bruger</button>
 
                 <p class="errormessage" th:text="${#ctx.message}"></p>
             </form>
         </div>
-        <a href="/createuser">Create account</a>
+        <a href="/">Hop til forsiden</a>
     </div>
 </div>
 </body>

@@ -40,3 +40,19 @@ h1 {
     color: red;
     font-size: 1.2rem;
 }
+
+/* Table styling */
+
+.task-table {
+    border-collapse: collapse;
+    font-size: 1.2rem;
+}
+
+.task-table td, .task-table th {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.task-table tr:nth-child(even) {
+    background-color: silver;
+}
