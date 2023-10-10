@@ -4,10 +4,8 @@ import app.entities.Task;
 import app.entities.User;
 import app.exceptions.DatabaseException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.crypto.Data;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +38,81 @@ public class TaskMapper
             throw new DatabaseException("Fejl!!!!");
         }
         return taskList;
+    }
+
+    public static Task addTask(User user, String taskName, ConnectionPool connectionPool) throws DatabaseException
+    {
+        Task newTask = null;
+
+        String sql = "insert into task (name, done, user_id) values (?,?,?)";
+
+        try (Connection connection = connectionPool.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+            {
+                ps.setString(1, taskName);
+                ps.setBoolean(2, false);
+                ps.setInt(3, user.getId());
+                int rowsAffected =  ps.executeUpdate();
+                if (rowsAffected == 1)
+                {
+                    ResultSet rs = ps.getGeneratedKeys();
+                //    rs.next();
+                    int newId = rs.getInt(1);
+                    newTask = new Task(newId, taskName, false, user.getId());
+                } else {
+                    throw new DatabaseException("Fejl under indsætning af task: " + taskName);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl i DB connection", e.getMessage());
+        }
+        return newTask;
+    }
+
+    public static void setDoneTo(boolean done, int taskId, ConnectionPool connectionPool) throws DatabaseException
+    {
+        String sql = "update task set done = ? where id = ?";
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            try (PreparedStatement ps = connection.prepareStatement(sql))
+            {
+                ps.setBoolean(1, done);
+                ps.setInt(2, taskId);
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 1)
+                {
+                    throw new DatabaseException("Fejl i opdatering af en task");
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl i opdatering af en task");
+        }
+    }
+
+    public static void delete(int taskId, ConnectionPool connectionPool) throws DatabaseException
+    {
+        String sql = "delete from task where id = ?";
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            try (PreparedStatement ps = connection.prepareStatement(sql))
+            {
+                ps.setInt(1, taskId);
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 1)
+                {
+                    throw new DatabaseException("Fejl i opdatering af en task");
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved sletning af en task");
+        }
     }
 }

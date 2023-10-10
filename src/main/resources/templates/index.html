@@ -24,7 +24,8 @@
                 <p class="errormessage" th:text="${#ctx.message}"></p>
             </form>
         </div>
-        <a href="/createuser">Create account</a>
+        <a th:if="${#ctx.session.currentUser} == null" th:href="@{/createuser}">Create account</a>
+        <a th:if="${#ctx.session.currentUser} != null" th:href="@{/logout}">Logout</a>
     </div>
 </div>
 </body>

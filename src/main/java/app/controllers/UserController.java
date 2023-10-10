@@ -60,4 +60,11 @@ public class UserController
         }
 
     }
+
+    public static void logout(Context ctx)
+    {
+        // Invalidate session
+        ctx.req().getSession().invalidate();
+        ctx.redirect("/");
+    }
 }
