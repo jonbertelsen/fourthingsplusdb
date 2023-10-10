@@ -31,14 +31,20 @@ public class Main
         // Routing
 
         app.get("/", ctx ->  ctx.render("index.html"));
+        // user routes
         app.post("/login", ctx -> UserController.login(ctx, connectionPool));
         app.get("/createuser", ctx -> ctx.render("createuser.html"));
         app.post("/createuser",ctx -> UserController.createuser(ctx, connectionPool ));
         app.get("/logout", ctx -> UserController.logout(ctx));
+
+        // task routes
         app.post("/addtask", ctx -> TaskController.addtask(ctx, connectionPool));
         app.post("/done", ctx -> TaskController.done(ctx, true, connectionPool));
         app.post("/undo", ctx -> TaskController.done(ctx, false, connectionPool));
         app.post("/delete", ctx -> TaskController.delete(ctx, connectionPool));
+        app.post("/edittask", ctx -> TaskController.edit(ctx, connectionPool));
+        app.post("/updatetask", ctx -> TaskController.update(ctx, connectionPool));
+
 
     }
 }

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{fragments :: head('Rediger task')}"></div>
+
+<body>
+
+<div id="page-container">
+
+    <div id="page-content">
+        <div th:replace="~{fragments :: header('Rediger task')}"></div>
+        <p>Vær venlig at ændre navnet her:</p>
+        <div class="centered-form">
+            <form method="post">
+                <input type="text" name="task_name" placeholder="" th:value="${#ctx.task.name}"/>
+                <button type="submit" name="task_id" formaction="/updatetask" th:value="${#ctx.task.id}">Opdater navn</button>
+            </form>
+        </div>
+    </div>
+    <div th:replace="~{fragments :: footer}"></div>
+</div>
+</body>
+</html>

@@ -15,7 +15,7 @@ public class TaskMapper
     public static List<Task> getAllTasksPerUser(int user_id, ConnectionPool connectionPool) throws DatabaseException
     {
         List<Task> taskList = new ArrayList<>();
-        String sql = "select * from task where user_id=?";
+        String sql = "select * from task where user_id=? order by name";
 
         try (Connection connection = connectionPool.getConnection())
         {
@@ -56,7 +56,7 @@ public class TaskMapper
                 if (rowsAffected == 1)
                 {
                     ResultSet rs = ps.getGeneratedKeys();
-                //    rs.next();
+                    rs.next();
                     int newId = rs.getInt(1);
                     newTask = new Task(newId, taskName, false, user.getId());
                 } else {
@@ -113,6 +113,58 @@ public class TaskMapper
         catch (SQLException e)
         {
             throw new DatabaseException("Fejl ved sletning af en task");
+        }
+    }
+
+    public static Task getTaskById(int taskId, ConnectionPool connectionPool) throws DatabaseException
+    {
+        Task task = null;
+
+        String sql = "select * from task where id = ?";
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            try (PreparedStatement ps = connection.prepareStatement(sql))
+            {
+                ps.setInt(1, taskId);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next())
+                {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    Boolean done = rs.getBoolean("done");
+                    int userId = rs.getInt("user_id");
+                    task = new Task(id, name, done, userId);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl ved hentning af task med id = " + taskId);
+        }
+        return task;
+    }
+
+    public static void update(int taskId, String taskName, ConnectionPool connectionPool) throws DatabaseException
+    {
+        String sql = "update task set name = ? where id = ?";
+
+        try (Connection connection = connectionPool.getConnection())
+        {
+            try (PreparedStatement ps = connection.prepareStatement(sql))
+            {
+                ps.setString(1, taskName);
+                ps.setInt(2, taskId);
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected != 1)
+                {
+                    throw new DatabaseException("Fejl i opdatering af en task");
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new DatabaseException("Fejl i opdatering af en task");
         }
     }
 }

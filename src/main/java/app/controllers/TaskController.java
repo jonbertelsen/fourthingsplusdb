@@ -33,6 +33,7 @@ public class TaskController
     public static void done(Context ctx, boolean done, ConnectionPool connectionPool)
     {
         int taskId = Integer.parseInt(ctx.formParam("task_id"));
+        String taskName= ctx.formParam("data-name");
         try
         {
             User user = ctx.sessionAttribute("currentUser");
@@ -67,5 +68,44 @@ public class TaskController
             ctx.attribute("message", e.getMessage());
             ctx.render("index.html");
         }
+    }
+
+    public static void edit(Context ctx, ConnectionPool connectionPool)
+    {
+        int taskId = Integer.parseInt(ctx.formParam("task_id"));
+        try
+        {
+            Task task = TaskMapper.getTaskById(taskId, connectionPool);
+            ctx.attribute("task", task);
+            ctx.render("edittask.html");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("message", e.getMessage());
+            ctx.render("index.html");
+        }
+    }
+
+    public static void update(Context ctx, ConnectionPool connectionPool)
+    {
+        int taskId = Integer.parseInt(ctx.formParam("task_id"));
+        String taskName = ctx.formParam("task_name");
+        try
+        {
+            TaskMapper.update(taskId, taskName, connectionPool);
+            User user = ctx.sessionAttribute("currentUser");
+            List<Task> taskList = TaskMapper.getAllTasksPerUser(user.getId(), connectionPool);
+            ctx.attribute("taskList", taskList);
+            ctx.render("tasks.html");
+        }
+        catch (DatabaseException e)
+        {
+            ctx.attribute("message", e.getMessage());
+            ctx.render("index.html");
+        }
+
+
+
+
     }
 }

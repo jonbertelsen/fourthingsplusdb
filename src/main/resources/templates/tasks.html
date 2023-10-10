@@ -1,62 +1,66 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Frontpage</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../public/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet"/>
-</head>
+<div th:replace="~{fragments :: head('Tasks')}"></div>
 
 <body>
 
 <div id="page-container">
 
     <div id="page-content">
-        <h1>Tasks</h1>
+
+        <div th:replace="~{fragments :: header('Tasks')}"></div>
+
         <div class="centered-form">
-            <form  method="post">
-                <input type="text" name="addtask" placeholder="add new task"/>
-                <button type="submit" formaction="/addtask">Add</button>
+            <form method="post">
+                <div class="row">
+                    <input type="text" name="addtask" placeholder="add new task"/>
+                    <button type="submit" formaction="/addtask">Add</button>
+                </div>
 
+                <h2>Todo</h2>
 
-            <h2>Todo</h2>
-
-            <table class="task-table">
-                <thead>
+                <table class="task-table">
+                    <thead>
                     <tr>
                         <th>Task</th>
                         <th>Action</th>
                     </tr>
                     <tr th:each="task: ${#ctx.taskList}" th:if="${not task.done}">
                         <td th:text="${task.name}"></td>
-                        <td><button type="submit" name="task_id" formaction="/done" th:value="${task.id}">Done</button></td>
+                        <td>
+                            <button type="submit" name="task_id" formaction="/done" th:value="${task.id}">Done</button>
+                            <button type="submit" name="task_id" formaction="/edittask" th:value="${task.id}">Edit
+                            </button>
+                        </td>
                     </tr>
-                </thead>
-            </table>
+                    </thead>
+                </table>
 
-            <h2>Done</h2>
+                <h2>Done</h2>
 
-            <table class="task-table">
-                <thead>
-                <tr>
-                    <th>Task</th>
-                    <th>Action</th>
-                </tr>
-                <tr th:each="task: ${#ctx.taskList}" th:if="${task.done}">
-                    <td th:text="${task.name}"></td>
-                    <td>
-                        <button type="submit" name="task_id" formaction="/undo" th:value="${task.id}">Undo</button>
-                        <button type="submit" name="task_id" formaction="/delete" th:value="${task.id}">Delete</button>
+                <table class="task-table">
+                    <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr th:each="task: ${#ctx.taskList}" th:if="${task.done}">
+                        <td th:text="${task.name}"></td>
+                        <td>
+                            <button type="submit" name="task_id" formaction="/undo" th:value="${task.id}">Undo</button>
+                            <button type="submit" name="task_id" formaction="/delete" th:value="${task.id}">Delete
+                            </button>
 
-                    </td>
-                </tr>
-                </thead>
-            </table>
+                        </td>
+                    </tr>
+                    </thead>
+                </table>
             </form>
 
         </div>
-        <a href="/">Til forside</a>
+
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
 </div>
 </body>
